@@ -14,13 +14,13 @@ class CalcView extends BaseView<CalcViewModel> {
     color: Colors.white.withOpacity(0.5),
   );
   final _textStyle = const TextStyle(
-    fontSize: 60,
+    fontSize: 70,
     color: Colors.white,
     fontFamily: 'OpenSans',
   );
-  final _buttonStyle = const TextStyle(
-    fontSize: 35,
-    color: Colors.white,
+  final _buttonStyle = TextStyle(
+    fontSize: 55,
+    color: Colors.white.withOpacity(0.8),
     fontFamily: 'OpenSans',
   );
   final _txtCtrl = TextEditingController();
@@ -42,8 +42,8 @@ class CalcView extends BaseView<CalcViewModel> {
     '8',
     '9',
     '0',
-    'C',
     '=',
+    'C',
   ];
 
   @override
@@ -67,39 +67,63 @@ class CalcView extends BaseView<CalcViewModel> {
             builder: (_, state) {
               final text = (state as Loaded).text;
               _txtCtrl.text = text;
-              return TextField(
-                scrollController: _scrollCtrl,
-                controller: _txtCtrl,
-                maxLines: 1,
-                onChanged: (str) {},
-                decoration: InputDecoration(
-                  hintText: 'Use my power',
-                  hintStyle: _textHintStyle,
-                  border: InputBorder.none,
-                  filled: true,
-                  fillColor: const Color.fromARGB(200, 102, 222, 251),
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(
-                    RegExp('[^A-Za-z!@#^&]'),
+              return Container(
+                margin: const EdgeInsets.only(top: 80),
+                child: TextField(
+                  scrollController: _scrollCtrl,
+                  controller: _txtCtrl,
+                  maxLines: 1,
+                  onChanged: (str) {},
+                  decoration: InputDecoration(
+                    hintText: 'Use my power',
+                    hintStyle: _textHintStyle,
+                    border: InputBorder.none,
+                    filled: true,
+                    fillColor: const Color.fromARGB(200, 102, 222, 251),
                   ),
-                ],
-                style: _textStyle,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                      RegExp('[^A-Za-z!@#^&]'),
+                    ),
+                  ],
+                  style: _textStyle,
+                ),
               );
             },
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  width: 100,
+                  height: 90,
+                  child: TextButton(
+                    onPressed: () => viewModel.backSapace(),
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
                   runAlignment: WrapAlignment.spaceBetween,
                   children: _createButtons(buttons),
                 ),
               ),
               Column(
                 children: _createButtons(operators),
-              )
+              ),
             ],
           ),
         ],
@@ -113,7 +137,7 @@ class CalcView extends BaseView<CalcViewModel> {
       list.add(
         SizedBox(
           width: 100,
-          height: 80,
+          height: 90,
           child: TextButton(
             onPressed: () {
               if (button == 'C') {

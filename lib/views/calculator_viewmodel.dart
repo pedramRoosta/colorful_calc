@@ -1,6 +1,5 @@
 import 'package:colorful_calc/bases/base_view_model.dart';
 import 'package:colorful_calc/views/calculator_state.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
@@ -9,11 +8,19 @@ class CalcViewModel extends BaseViewModel<CalcBaseState> {
 
   List<String> numbers = [];
   List<String> operators = [];
+
   void addText(String str) {
     if (isNumber(str) || isNumber(getLastChar())) {
       String text = (state as Loaded).text;
       text += str;
       emit(Loaded(text: text));
+    }
+  }
+
+  void backSapace() {
+    final text = (state as Loaded).text;
+    if (text.isNotEmpty) {
+      emit(Loaded(text: text.substring(0, text.length - 1)));
     }
   }
 
@@ -55,25 +62,31 @@ class CalcViewModel extends BaseViewModel<CalcBaseState> {
         word = '';
       }
     }
-    numbers.add(word);
-    double result = double.parse(numbers[0]);
-    for (var i = 0; i < operators.length; i++) {
-      switch (operators[i]) {
-        case '+':
-          result += double.parse(numbers[i + 1]);
-          break;
-        case '-':
-          result -= double.parse(numbers[i + 1]);
-          break;
-        case '/':
-          result /= double.parse(numbers[i + 1]);
-          break;
-        case '*':
-          result *= double.parse(numbers[i + 1]);
-          break;
-        default:
+    if (numbers.isNotEmpty) {
+      if (word.isNotEmpty) {
+        numbers.add(word);
+      }
+      if (numbers.length >= 2) {
+        double result = double.parse(numbers[0]);
+        for (var i = 0; i < operators.length; i++) {
+          switch (operators[i]) {
+            case '+':
+              result += double.parse(numbers[i + 1]);
+              break;
+            case '-':
+              result -= double.parse(numbers[i + 1]);
+              break;
+            case '/':
+              result /= double.parse(numbers[i + 1]);
+              break;
+            case '*':
+              result *= double.parse(numbers[i + 1]);
+              break;
+            default:
+          }
+        }
+        emit(Loaded(text: result.toString()));
       }
     }
-    emit(Loaded(text: result.toString()));
   }
 }
